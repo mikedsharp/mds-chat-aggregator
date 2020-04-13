@@ -1,0 +1,33 @@
+{
+  "name": "mds-discord-youtube-chat-aggregator",
+  "version": "1.0.0",
+  "description": "A tool to aggregate incoming chat messages from YouTube livestream chat and a specific discord channel.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html --no-source-maps --public-url ./ --no-content-hash",
+    "format": "npx prettier --write \"{,!(node_modules)/**/}*.{js,jsx}\""
+  },
+  "author": "Mike D Sharp",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.7.7",
+    "eslint": "^6.8.0",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "parcel": "^1.12.4",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-svelte": "^4.0.6",
+    "prettier": "^2.0.0",
+    "prettier-plugin-svelte": "^0.7.0",
+    "sass": "^1.23.7",
+    "svelte": "^3.20.1",
+    "svelte-preprocess": "^3.5.0"
+  },
+  "dependencies": {
+    "core-js": "^3.6.1",
+    "discord.js": "^12.1.1",
+    "regenerator-runtime": "^0.13.3"
+  }
+}

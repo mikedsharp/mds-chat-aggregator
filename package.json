@@ -1,0 +1,11 @@
+{
+  "name": "mds-discord-youtube-chat-aggregator",
+  "version": "1.0.0",
+  "description": "A tool to aggregate incoming chat messages from YouTube livestream chat and a specific discord channel.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike D Sharp",
+  "license": "ISC"
+}

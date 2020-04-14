@@ -3,7 +3,11 @@ module.exports = function (messageBroadcaster) {
   module.listen = function () {
     console.log("Fake Twitch login");
     console.log("Fake Message receipt...");
-    messageBroadcaster.pushMessage("message from fake Twitch client");
+    messageBroadcaster.pushMessage({
+      message: "message from fake Twitch client",
+      username: "fakeUser",
+      createdTimestamp: 1586826493774,
+    });
   };
   return module;
 };

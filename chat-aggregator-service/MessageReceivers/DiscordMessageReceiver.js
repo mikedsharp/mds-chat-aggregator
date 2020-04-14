@@ -5,7 +5,7 @@ module.exports = function (messageBroadcaster) {
   const module = {};
   module.listen = function () {
     discordClient.on("message", (msg) => {
-      if (msg.channel.name === "general") {
+      if (msg.channel.name === process.env.DISCORD_BROADCAST_CHANNEL) {
         console.log("sending discord message back to client...");
         messageBroadcaster.pushMessage(msg.content);
       }

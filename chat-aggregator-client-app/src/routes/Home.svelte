@@ -1,58 +1,61 @@
 <script>
-  import io from "socket.io-client";
-  import { format } from "date-fns";
-  const socket = io("http://localhost:9000");
-  let messages = [];
-  let message = "";
-  socket.on("event", function(data) {
-    messages = [...messages, data];
-  });
+  import { onMount } from "svelte";
+  import { push } from "svelte-spa-router";
+
+  async function onYouTubeLoginClick() {
+    const youTubeAuthLinkResponse = await fetch(
+      "http://localhost:3000/authenticate-youtube",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    const youTubeAuthLinkData = await youTubeAuthLinkResponse.json();
+    window.location.href = youTubeAuthLinkData.authUrl;
+  }
+  function onChatWindowButtonClick() {
+    push("/chat");
+  }
+  onMount(() => {});
 </script>
 
 <style lang="scss">
-  ul {
-    margin: 0;
-    padding: 0;
-    background-color: #eee;
-    border: 1px solid #dcdcdc;
-    height: 100%;
-    overflow-y: auto;
-    li {
-      padding: 10px 2px;
-      list-style-type: none;
-      margin: 0;
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      color: #000;
-      b {
-        margin-right: 6px;
-        color: #777;
-      }
-      img {
-        display: flex;
-        width: 32px;
-        height: 32px;
-        float: left;
-        margin: 0 10px;
-        border-radius: 50%;
-      }
-      span {
-        margin-top: 3px;
-      }
+  .wrap {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin-top: 20px;
+
+    button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
     }
   }
 </style>
 
-<ul>
-  {#each messages as message}
-    <li>
-      <img alt="user avatar" src={message.avatar} />
-      <span>
-        <b>{message.username}</b>
-        {message.message}
-      </span>
-    </li>
-  {/each}
-</ul>
+<div class="wrap">
+  <h1>Welcome to the Live Chat Aggregator!</h1>
+  <button
+    type="button"
+    on:click={() => {
+      onYouTubeLoginClick();
+    }}>
+    Log into YouTube chat (required for YouTube stream chat)
+  </button>
+  <button
+    type="button"
+    on:click={() => {
+      onChatWindowButtonClick();
+    }}>
+    Go to chat window (will only show discord if you don't log in with google
+    via button above)
+  </button>
+</div>

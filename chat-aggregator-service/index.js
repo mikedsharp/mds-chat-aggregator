@@ -4,10 +4,15 @@ const socketIoServer = require("http").createServer();
 const io = require("socket.io")(socketIoServer);
 const messageBroadcaster = require("./MessageBroadcaster")(io);
 
+const express = require("express");
+const app = express();
+const cors = require("cors");
+app.use(cors());
+const port = 3000;
+
+require("./Controllers/YouTubeAuthController")(app, messageBroadcaster);
+
 const discordMessageReceiver = require("./MessageReceivers/DiscordMessageReceiver")(
-  messageBroadcaster
-);
-const youTubeMessageReceiver = require("./MessageReceivers/YouTubeMessageReceiver")(
   messageBroadcaster
 );
 
@@ -25,5 +30,8 @@ io.on("connection", (client) => {
 socketIoServer.listen(9000);
 
 discordMessageReceiver.listen();
-youTubeMessageReceiver.listen();
 twitchMessageReceiver.listen();
+
+app.listen(port, () =>
+  console.log(`Example app listening at http://localhost:${port}`)
+);

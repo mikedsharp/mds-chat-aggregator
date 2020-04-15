@@ -1,11 +1,26 @@
 <script>
   import io from "socket.io-client";
   import { format } from "date-fns";
+  import * as animateScroll from "svelte-scrollto";
+  import { onDestroy, onMount } from "svelte";
   const socket = io("http://localhost:9000");
   let messages = [];
   let message = "";
-  socket.on("event", function(data) {
-    messages = [...messages, data];
+  let chatLength = 0;
+  // there will be a better way of doing this in svelte... I do not know it yet though.
+  let interval;
+  onMount(() => {
+    interval = window.setInterval(() => {
+      const chatWindowElm = document.getElementById("chat-window");
+      chatWindowElm.scrollTop = chatWindowElm.offsetHeight;
+    }, 500);
+    socket.on("event", function(data) {
+      messages = [...messages, data];
+      animateScroll.scrollToBottom({ element: "#chat-window" });
+    });
+  });
+  onDestroy(() => {
+    interval();
   });
 </script>
 
@@ -43,12 +58,13 @@
       span {
         margin-top: 3px;
         word-break: break-word;
+        word-wrap: break-word;
       }
     }
   }
 </style>
 
-<ul>
+<ul id="chat-window">
   {#each messages as message}
     <li>
       <img alt="user avatar" src={message.avatar} />

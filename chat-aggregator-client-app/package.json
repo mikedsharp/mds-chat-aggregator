@@ -25,6 +25,7 @@
     "sass": "^1.23.7",
     "svelte": "^3.20.1",
     "svelte-preprocess": "^3.5.0",
+    "svelte-scrollto": "^0.1.1",
     "svelte-spa-router": "^2.1.0"
   },
   "dependencies": {

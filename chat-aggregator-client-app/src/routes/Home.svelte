@@ -34,28 +34,78 @@
     button {
       margin: 5px;
       padding: 10px;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 400;
+      background-color: #445544;
+      font-family: "Noto Sans", sans-serif;
+      color: #eee;
+      border-radius: 3px;
+      padding: 10px 20px;
+      width: 300px;
       cursor: pointer;
+      &:hover {
+        background-color: #556655;
+      }
+    }
+    h1 {
+      font-family: "Sansita", sans-serif;
+      margin: 20px 10px;
+      text-align: center;
+    }
+    p {
+      max-width: 600px;
+    }
+    .login-options {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+  .option__gotogooglelogin,
+  .option__gotochat {
+    background-color: #3a423c;
+    color: #eee;
+    border-radius: 10px;
+    width: 300px;
+    margin: 10px;
+    padding: 30px;
+
+    p {
+      margin: 5px;
     }
   }
 </style>
 
 <div class="wrap">
   <h1>Welcome to the Live Chat Aggregator!</h1>
-  <button
-    type="button"
-    on:click={() => {
-      onYouTubeLoginClick();
-    }}>
-    Log into YouTube chat (required for YouTube stream chat)
-  </button>
-  <button
-    type="button"
-    on:click={() => {
-      onChatWindowButtonClick();
-    }}>
-    Go to chat window (will only show discord if you don't log in with google
-    via button above)
-  </button>
+  <div class="login-options">
+    <div class="option__gotogooglelogin">
+      <p>
+        To enable YouTube live chat you will first need to click on 'Log in with
+        google'. logging in will allow the app to connect to your livestreams
+        chat
+      </p>
+      <button
+        type="button"
+        on:click={() => {
+          onYouTubeLoginClick();
+        }}>
+        Log in with google
+      </button>
+    </div>
+    <div class="option__gotochat">
+
+      <p>
+        Alternatively you can go straight to the chat window if you're already
+        authenticated with google or just want discord chat messages.
+      </p>
+      <button
+        type="button"
+        on:click={() => {
+          onChatWindowButtonClick();
+        }}>
+        Go to chat window
+      </button>
+    </div>
+  </div>
 </div>

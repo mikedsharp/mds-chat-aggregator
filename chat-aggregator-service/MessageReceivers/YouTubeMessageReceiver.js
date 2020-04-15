@@ -5,17 +5,24 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
   const module = { liveChatId: null, pageToken: null };
   let youtube = null;
   let poller = null;
-  module.listen = async function () {
+  module.listen = async function (broadcastId) {
     youtube = google.youtube({
       version: "v3",
       auth: youtubeAuthenticationService.oauth2Client,
     });
     try {
-      await module.getCurrentLiveBroadcastHandle();
+      if (broadcastId) {
+        await module.getBroadcastById(broadcastId);
+      } else {
+        await module.getCurrentLiveBroadcastHandle();
+      }
       // do not await this as it goes in a loop on its own
       module.pollForMessages();
+      return Promise.resolve({});
     } catch (ex) {
+      console.log(ex);
       console.log("failed to connect to livestream chat");
+      return Promise.resolve({});
     }
   };
   module.getCurrentLiveBroadcastHandle = async function () {
@@ -23,6 +30,19 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
     const res = await youtube.liveBroadcasts.list({
       part: "snippet",
       broadcastStatus: "active",
+    });
+    if (res.data.items.length > 0) {
+      console.log("got live chat id: " + res.data.items[0].snippet.liveChatId);
+      module.liveChatId = res.data.items[0].snippet.liveChatId;
+      return Promise.resolve({});
+    } else {
+      throw new Error("no live broadcasts found");
+    }
+  };
+  module.getBroadcastById = async function (broadcastId) {
+    const res = await youtube.liveBroadcasts.list({
+      part: "snippet",
+      id: broadcastId,
     });
     console.log("got live chat id: " + res.data.items[0].snippet.liveChatId);
     module.liveChatId = res.data.items[0].snippet.liveChatId;

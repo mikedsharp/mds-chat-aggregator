@@ -16,10 +16,6 @@ const discordMessageReceiver = require("./MessageReceivers/DiscordMessageReceive
   messageBroadcaster
 );
 
-const twitchMessageReceiver = require("./MessageReceivers/TwitchMessageReceiver")(
-  messageBroadcaster
-);
-
 // establish socket.io connection to relay messages from all message providers
 io.on("connection", (client) => {
   console.log("client connected");
@@ -30,7 +26,6 @@ io.on("connection", (client) => {
 socketIoServer.listen(9000);
 
 discordMessageReceiver.listen();
-twitchMessageReceiver.listen();
 
 app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)

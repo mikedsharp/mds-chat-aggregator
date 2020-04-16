@@ -4,19 +4,19 @@ The mds-chat-aggregator allows you to display discord and YouTube messages in on
 
 ## Setup
 
-for full setup instructions, please see my [YouTube video](https://www.youtube.com/user/programmerinprogress). I would normally provide written instructions but this takes a bit of setup in google and discord and is better presented as a video you can skim through.
+For full setup instructions, please see my [YouTube video](https://www.youtube.com/user/programmerinprogress). I would normally provide written instructions but this takes a bit of setup in google and discord and is better presented as a video you can skim through.
 
 Please watch the video linked above to its completion before trying to run the chat aggregator.
 
 ## Running the aggregator
 
-from the root directory of the project, open two terminal windows.
+From the root directory of the project, open two terminal windows.
 
 In terminal 1, type:
 
 `cd chat-aggregator-client-app`
 
-followed by
+Followed by
 
 `npm install`
 
@@ -28,7 +28,7 @@ Then, in terminal 2 type:
 
 `cd chat-aggregator-service`
 
-followed by
+Followed by
 
 `npm install`
 
@@ -39,7 +39,7 @@ and finally
 The service should now be running, with some API endpoints running on port http://localhost:3000 and
 the UI should be running on http://localhost:1234
 
-go to http://localhost:1234 to begin using the application
+Go to http://localhost:1234 to begin using the application.
 
 # Disclaimer
 

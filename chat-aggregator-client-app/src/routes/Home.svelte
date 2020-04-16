@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
-
+  let random = null;
+  const serviceEndpoint = "http://localhost:3000";
+  const healthEndpoint = `${serviceEndpoint}/health`;
   async function onYouTubeLoginClick() {
     const youTubeAuthLinkResponse = await fetch(
       "http://localhost:3000/authenticate-youtube",
@@ -18,7 +20,22 @@
   function onChatWindowButtonClick() {
     push("/chat");
   }
-  onMount(() => {});
+  function getCachebustValue() {
+    return Math.random() * 10000000000000000;
+  }
+  async function checkApiHealth() {
+    random = getCachebustValue();
+    const healthResult = await fetch(`${healthEndpoint}?cachebust=${random}`, {
+      method: "GET"
+    });
+    const healthData = await healthResult.json();
+    if (healthData.healthy) {
+      push("/youtube-authenticated");
+    }
+  }
+  onMount(async () => {
+    await checkApiHealth();
+  });
 </script>
 
 <style lang="scss">

@@ -52,6 +52,13 @@
     );
     await checkApiHealth();
   }
+  async function onCancelYouTubeBroadcastListener() {
+    await fetch(`${serviceEndpoint}/disconnect?cachebust=${random}`, {
+      method: "GET"
+    });
+    await checkApiHealth();
+    connectionAttempted = false;
+  }
 </script>
 
 <style lang="scss">
@@ -152,6 +159,13 @@
         onChatWindowButtonClick();
       }}>
       Continue to chat window
+    </button>
+    <button
+      type="button"
+      on:click={() => {
+        onCancelYouTubeBroadcastListener();
+      }}>
+      Stop listening to current broadcast
     </button>
   {/if}
 </div>

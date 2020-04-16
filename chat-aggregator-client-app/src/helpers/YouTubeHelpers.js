@@ -26,3 +26,24 @@ export async function getAuthUrl() {
   const youTubeAuthLinkData = await youTubeAuthLinkResponse.json();
   return youTubeAuthLinkData.authUrl;
 }
+
+export async function connectToLiveBroadcast() {
+  const random = getCachebustValue();
+  await fetch(`${serviceEndpoint}/connect/latest?cachebust=${random}`, {
+    method: "GET",
+  });
+}
+
+export async function connectToSpecificBroadcast(broadcastId) {
+  const random = getCachebustValue();
+  await fetch(`${serviceEndpoint}/connect/${broadcastId}?cachebust=${random}`, {
+    method: "GET",
+  });
+}
+
+export async function disconnectFromBroadcastChat() {
+  const random = getCachebustValue();
+  await fetch(`${serviceEndpoint}/disconnect?cachebust=${random}`, {
+    method: "GET",
+  });
+}

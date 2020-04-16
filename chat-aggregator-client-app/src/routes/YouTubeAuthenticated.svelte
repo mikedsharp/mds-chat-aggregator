@@ -1,13 +1,17 @@
 <script>
   import { push } from "svelte-spa-router";
   import { onMount } from "svelte";
-  import { checkApiHealth, getCachebustValue } from "../helpers/YouTubeHelpers";
+  import {
+    checkApiHealth,
+    getCachebustValue,
+    connectToLiveBroadcast,
+    connectToSpecificBroadcast,
+    disconnectFromBroadcastChat
+  } from "../helpers/YouTubeHelpers";
 
   let healthStatus = false;
   let connectionAttempted = false;
   let broadcastId = "";
-  const serviceEndpoint = "http://localhost:3000";
-  const healthEndpoint = `${serviceEndpoint}/health`;
 
   onMount(async () => {
     healthStatus = await checkApiHealth();
@@ -19,10 +23,7 @@
   }
 
   async function onClickRetryConnectToLivestream() {
-    const random = getCachebustValue();
-    await fetch(`${serviceEndpoint}/connect/latest?cachebust=${random}`, {
-      method: "GET"
-    });
+    await connectToLiveBroadcast();
     await checkApiHealth();
     connectionAttempted = true;
   }
@@ -31,21 +32,13 @@
     if (broadcastId.length === 0) {
       return;
     }
-    const random = getCachebustValue();
-    await fetch(
-      `${serviceEndpoint}/connect/${broadcastId}?cachebust=${random}`,
-      {
-        method: "GET"
-      }
-    );
+    await connectToSpecificBroadcast(broadcastId);
     healthStatus = await checkApiHealth();
     connectionAttempted = true;
   }
+
   async function onCancelYouTubeBroadcastListener() {
-    const random = getCachebustValue();
-    await fetch(`${serviceEndpoint}/disconnect?cachebust=${random}`, {
-      method: "GET"
-    });
+    await disconnectFromBroadcastChat();
     healthStatus = await checkApiHealth();
     connectionAttempted = false;
   }

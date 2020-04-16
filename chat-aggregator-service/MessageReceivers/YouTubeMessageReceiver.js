@@ -18,9 +18,9 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
       }
       // do not await this as it goes in a loop on its own
       module.pollForMessages();
-      return Promise.resolve({});
     } catch (ex) {
       console.log("failed to connect to livestream chat");
+      return Promise.reject({});
     }
     return Promise.resolve({});
   };
@@ -30,6 +30,7 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
       part: "snippet",
       broadcastStatus: "active",
     });
+
     if (res.data.items.length > 0) {
       module.liveChatId = res.data.items[0].snippet.liveChatId;
       return Promise.resolve({});
@@ -39,19 +40,16 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
     }
   };
   module.getBroadcastById = async function (broadcastId) {
-    try {
-      const res = await youtube.liveBroadcasts.list({
-        part: "snippet",
-        id: broadcastId,
-      });
-      if (res.data.items.length === 0) {
-        console.log("no livestreams of that id were found");
-        return Promise.resolve({});
-      }
+    const res = await youtube.liveBroadcasts.list({
+      part: "snippet",
+      id: broadcastId,
+    });
+    if (res.data.items.length > 0) {
       module.liveChatId = res.data.items[0].snippet.liveChatId;
       return Promise.resolve({});
-    } catch (ex) {
-      return Promise.resolve({});
+    } else {
+      console.log(`broadcast '${broadcastId}' was not found`);
+      return Promise.reject({});
     }
   };
   module.stopPollingForMessages = function () {
@@ -63,15 +61,18 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
   };
   module.pollForMessages = async function () {
     try {
+      if (!module.liveChatId) {
+        return Promise.reject({});
+      }
       const requestParams = {
         liveChatId: module.liveChatId,
         part: "snippet,authorDetails",
       };
-      if (module.nextPageToken) {
-        requestParams.pageToken = module.nextPageToken;
+      if (module.pageToken) {
+        requestParams.pageToken = module.pageToken;
       }
       const res = await youtube.liveChatMessages.list(requestParams);
-      module.nextPageToken = res.data.nextPageToken;
+      module.pageToken = res.data.nextPageToken;
       res.data.items.forEach((message) => {
         messageBroadcaster.pushMessage({
           message: message.snippet.displayMessage,

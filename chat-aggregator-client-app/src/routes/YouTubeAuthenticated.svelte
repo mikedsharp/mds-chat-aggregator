@@ -24,7 +24,7 @@
 
   async function onClickRetryConnectToLivestream() {
     await connectToLiveBroadcast();
-    await checkApiHealth();
+    healthStatus = await checkApiHealth();
     connectionAttempted = true;
   }
 

@@ -20,11 +20,15 @@ module.exports = function (app, messageBroadcaster) {
     });
   });
   app.get("/connect/latest", async (req, res) => {
-    await youTubeMessageReceiver.listen();
+    try {
+      await youTubeMessageReceiver.listen();
+    } catch (ex) {}
     return res.json({});
   });
   app.get("/connect/:broadcastId", async (req, res) => {
-    await youTubeMessageReceiver.listen(req.params.broadcastId);
+    try {
+      await youTubeMessageReceiver.listen(req.params.broadcastId);
+    } catch (ex) {}
     return res.json({});
   });
   app.get("/disconnect", (req, res) => {

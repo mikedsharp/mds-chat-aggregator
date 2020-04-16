@@ -1,71 +1,69 @@
 <script>
   import { push } from "svelte-spa-router";
   import { onMount } from "svelte";
+
   let healthStatus = false;
   let connectionAttempted = false;
   let broadcastId = "";
-  let random = Math.random() * 10000000000000000;
+  let random;
+  const serviceEndpoint = "http://localhost:3000";
+  const healthEndpoint = `${serviceEndpoint}/health`;
+
+  onMount(async () => {
+    await checkApiHealth();
+  });
+
   function onChatWindowButtonClick() {
     push("/chat");
   }
+
+  function getCachebustValue() {
+    return Math.random() * 10000000000000000;
+  }
+
   async function onClickRetryConnectToLivestream() {
-    random = Math.random() * 10000000000000000;
-    await fetch(`http://localhost:3000/connect/latest?cachebust=${random}`, {
+    random = getCachebustValue();
+    await fetch(`${serviceEndpoint}/connect/latest?cachebust=${random}`, {
       method: "GET"
     });
-    const healthResult = await fetch(
-      `http://localhost:3000/health?cachebust=${random}`,
-      {
-        method: "GET"
-      }
-    );
+    await checkApiHealth();
+  }
+
+  async function checkApiHealth() {
+    random = getCachebustValue();
+    const healthResult = await fetch(`${healthEndpoint}?cachebust=${random}`, {
+      method: "GET"
+    });
     const healthData = await healthResult.json();
     healthStatus = healthData.healthy;
     connectionAttempted = true;
   }
+
   async function onClickConnectByBroadcastId() {
     if (broadcastId.length === 0) {
       return;
     }
-    random = Math.random() * 10000000000000000;
+    random = getCachebustValue();
     await fetch(
-      `http://localhost:3000/connect/${broadcastId}?cachebust=${random}`,
+      `${serviceEndpoint}/connect/${broadcastId}?cachebust=${random}`,
       {
         method: "GET"
       }
     );
-    const healthResult = await fetch(
-      `http://localhost:3000/health?cachebust=${random}`,
-      {
-        method: "GET"
-      }
-    );
-    const healthData = await healthResult.json();
-    healthStatus = healthData.healthy;
-    connectionAttempted = true;
+    await checkApiHealth();
   }
-  onMount(async () => {
-    random = Math.random() * 10000000000000000;
-    const healthResult = await fetch(
-      `http://localhost:3000/health?cachebust=${random}`,
-      {
-        method: "GET"
-      }
-    );
-    const healthData = await healthResult.json();
-    healthStatus = healthData.healthy;
-  });
 </script>
 
 <style lang="scss">
   .wrap {
+    max-width: 960px;
+    margin: 0 auto;
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 1;
-    margin-top: 20px;
 
     button {
       margin: 5px;
@@ -94,6 +92,29 @@
     h1 {
       font-family: "Sansita", sans-serif;
     }
+    .broadcast-options {
+      display: flex;
+      flex-direction: row;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #707a71;
+        color: #eee;
+        border-radius: 10px;
+        width: 300px;
+        margin: 10px;
+        padding: 30px;
+        label {
+          font-weight: bold;
+        }
+        input {
+          padding: 5px;
+          margin: 5px 0;
+        }
+      }
+    }
   }
 </style>
 
@@ -102,20 +123,28 @@
   {#if healthStatus === false && connectionAttempted === true}
     <h2>
       You were unable to connect to either the current live chat or an upcoming
-      broadcast, please try again by either clicking 'Retry connecting to active
-      livestream' or providing a broadcast ID and clicking 'Connect to chat of a
+      broadcast. Please try again by either clicking 'Connect to active
+      Livestream' or providing a broadcast ID and clicking 'Connect to chat of a
       scheduled livestream'
     </h2>
   {/if}
   {#if healthStatus === false || connectionAttempted === false}
-    <button on:click={() => onClickRetryConnectToLivestream()} type="button">
-      Retry connecting to active livestream
-    </button>
-    <label>Broadcast ID</label>
-    <input bind:value={broadcastId} type="text" />
-    <button on:click={() => onClickConnectByBroadcastId()} type="button">
-      Connect to chat of a scheduled livestream
-    </button>
+    <div class="broadcast-options">
+      <div>
+        <button
+          on:click={() => onClickRetryConnectToLivestream()}
+          type="button">
+          Connect to active livestream
+        </button>
+      </div>
+      <div>
+        <label>Broadcast ID</label>
+        <input bind:value={broadcastId} type="text" />
+        <button on:click={() => onClickConnectByBroadcastId()} type="button">
+          Connect to chat of a scheduled livestream
+        </button>
+      </div>
+    </div>
   {:else}
     <button
       type="button"

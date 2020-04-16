@@ -9,7 +9,6 @@ module.exports = function (messageBroadcaster) {
         msg.channel.name === process.env.DISCORD_BROADCAST_CHANNEL &&
         msg.cleanContent.length > 0
       ) {
-        console.log("sending discord message back to client...");
         messageBroadcaster.pushMessage({
           message: msg.cleanContent,
           username: msg.author.username,
@@ -18,7 +17,6 @@ module.exports = function (messageBroadcaster) {
         });
       }
     });
-    console.log("logging into Discord chatbot...");
     discordClient.login(process.env.DISCORD_BOT_TOKEN);
   };
   return module;

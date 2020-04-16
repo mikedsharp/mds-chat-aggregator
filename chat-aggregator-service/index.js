@@ -3,7 +3,6 @@ require("dotenv").config();
 const socketIoServer = require("http").createServer();
 const io = require("socket.io")(socketIoServer);
 const messageBroadcaster = require("./MessageBroadcaster")(io);
-
 const express = require("express");
 const app = express();
 const cors = require("cors");

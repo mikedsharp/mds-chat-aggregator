@@ -20,10 +20,9 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
       module.pollForMessages();
       return Promise.resolve({});
     } catch (ex) {
-      console.log(ex);
       console.log("failed to connect to livestream chat");
-      return Promise.resolve({});
     }
+    return Promise.resolve({});
   };
   module.getCurrentLiveBroadcastHandle = async function () {
     // trying to fetch a live broadcast id from YouTube
@@ -32,20 +31,28 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
       broadcastStatus: "active",
     });
     if (res.data.items.length > 0) {
-      console.log("got live chat id: " + res.data.items[0].snippet.liveChatId);
       module.liveChatId = res.data.items[0].snippet.liveChatId;
       return Promise.resolve({});
     } else {
-      throw new Error("no live broadcasts found");
+      console.log("no live broadcasts found");
+      return Promise.reject({});
     }
   };
   module.getBroadcastById = async function (broadcastId) {
-    const res = await youtube.liveBroadcasts.list({
-      part: "snippet",
-      id: broadcastId,
-    });
-    console.log("got live chat id: " + res.data.items[0].snippet.liveChatId);
-    module.liveChatId = res.data.items[0].snippet.liveChatId;
+    try {
+      const res = await youtube.liveBroadcasts.list({
+        part: "snippet",
+        id: broadcastId,
+      });
+      if (res.data.items.length === 0) {
+        console.log("no livestreams of that id were found");
+        return Promise.resolve({});
+      }
+      module.liveChatId = res.data.items[0].snippet.liveChatId;
+      return Promise.resolve({});
+    } catch (ex) {
+      return Promise.resolve({});
+    }
   };
   module.stopPollingForMessages = function () {
     if (poller) {
@@ -75,10 +82,8 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
         module.pollForMessages();
       }, YOUTUBE_POLLING_INTERVAL);
     } catch (ex) {
-      console.log(
-        "stopping polling due to a problem connecting, authenticating or being rate-limited by Google"
-      );
       module.stopPollingForMessages();
+      return Promise.resolve({});
     }
   };
   return module;

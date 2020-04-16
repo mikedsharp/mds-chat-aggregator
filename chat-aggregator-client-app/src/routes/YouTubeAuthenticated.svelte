@@ -2,26 +2,58 @@
   import { push } from "svelte-spa-router";
   import { onMount } from "svelte";
   let healthStatus = false;
+  let connectionAttempted = false;
   let broadcastId = "";
+  let random = Math.random() * 10000000000000000;
   function onChatWindowButtonClick() {
     push("/chat");
   }
-  function onClickRetryConnectToLivestream() {
-    window.location.href = "http://localhost:3000/connect/latest";
-  }
-  function onClickConnectByBroadcastId() {
-    window.location.href = `http://localhost:3000/connect/${broadcastId}`;
-  }
-  onMount(async () => {
-    const healthResult = await fetch("http://localhost:3000/health", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
+  async function onClickRetryConnectToLivestream() {
+    random = Math.random() * 10000000000000000;
+    await fetch(`http://localhost:3000/connect/latest?cachebust=${random}`, {
+      method: "GET"
     });
+    const healthResult = await fetch(
+      `http://localhost:3000/health?cachebust=${random}`,
+      {
+        method: "GET"
+      }
+    );
     const healthData = await healthResult.json();
     healthStatus = healthData.healthy;
-    console.log(healthStatus);
+    connectionAttempted = true;
+  }
+  async function onClickConnectByBroadcastId() {
+    if (broadcastId.length === 0) {
+      return;
+    }
+    random = Math.random() * 10000000000000000;
+    await fetch(
+      `http://localhost:3000/connect/${broadcastId}?cachebust=${random}`,
+      {
+        method: "GET"
+      }
+    );
+    const healthResult = await fetch(
+      `http://localhost:3000/health?cachebust=${random}`,
+      {
+        method: "GET"
+      }
+    );
+    const healthData = await healthResult.json();
+    healthStatus = healthData.healthy;
+    connectionAttempted = true;
+  }
+  onMount(async () => {
+    random = Math.random() * 10000000000000000;
+    const healthResult = await fetch(
+      `http://localhost:3000/health?cachebust=${random}`,
+      {
+        method: "GET"
+      }
+    );
+    const healthData = await healthResult.json();
+    healthStatus = healthData.healthy;
   });
 </script>
 
@@ -67,12 +99,15 @@
 
 <div class="wrap">
   <h1>You are now authenticated with YouTube!</h1>
-  {#if healthStatus === false}
+  {#if healthStatus === false && connectionAttempted === true}
     <h2>
-      You could not be connected automatically to a chat, please try to connect
-      to a live stream chat again or specify a broadcast ID of a schedule
-      broadcast
+      You were unable to connect to either the current live chat or an upcoming
+      broadcast, please try again by either clicking 'Retry connecting to active
+      livestream' or providing a broadcast ID and clicking 'Connect to chat of a
+      scheduled livestream'
     </h2>
+  {/if}
+  {#if healthStatus === false || connectionAttempted === false}
     <button on:click={() => onClickRetryConnectToLivestream()} type="button">
       Retry connecting to active livestream
     </button>

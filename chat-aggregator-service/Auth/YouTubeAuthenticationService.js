@@ -29,12 +29,10 @@ module.exports = function () {
     module.oauth2Client.on("tokens", async (tokens) => {
       if (tokens.refresh_token) {
         module.refresh_token = tokens.refresh_token;
-        console.log(tokens.refresh_token);
       }
       module.access_token = tokens.access_token;
-      console.log(tokens.access_token);
     });
-    console.log("beginning token management: " + authCode);
+    return Promise.resolve({});
   };
   return module;
 };

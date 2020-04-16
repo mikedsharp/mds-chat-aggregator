@@ -4,7 +4,7 @@ The mds-chat-aggregator allows you to display discord and YouTube messages in on
 
 ## Setup
 
-for full setup instructions, please see my [YouTube video](https://www.youtube.com/user/programmerinprogress), i'd normally provide written instructions but this takes a bit of setup in google and discord and is better presented as a video you can skim through.
+for full setup instructions, please see my [YouTube video](https://www.youtube.com/user/programmerinprogress). I would normally provide written instructions but this takes a bit of setup in google and discord and is better presented as a video you can skim through.
 
 Please watch the video linked above to its completion before trying to run the chat aggregator.
 

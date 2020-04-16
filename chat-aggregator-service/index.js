@@ -9,7 +9,7 @@ const cors = require("cors");
 app.use(cors());
 const port = 3000;
 
-require("./Controllers/YouTubeAuthController")(app, messageBroadcaster);
+require("./Controllers/YouTubeController")(app, messageBroadcaster);
 
 const discordMessageReceiver = require("./MessageReceivers/DiscordMessageReceiver")(
   messageBroadcaster

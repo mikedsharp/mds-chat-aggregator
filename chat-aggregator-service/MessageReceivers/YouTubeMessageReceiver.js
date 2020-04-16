@@ -58,6 +58,7 @@ module.exports = function (messageBroadcaster, youtubeAuthenticationService) {
     if (poller) {
       poller();
     }
+    module.liveChatId = null;
   };
   module.pollForMessages = async function () {
     try {

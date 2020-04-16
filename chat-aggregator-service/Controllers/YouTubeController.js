@@ -27,4 +27,8 @@ module.exports = function (app, messageBroadcaster) {
     await youTubeMessageReceiver.listen(req.params.broadcastId);
     return res.json({});
   });
+  app.get("/disconnect", (req, res) => {
+    youTubeMessageReceiver.stopPollingForMessages();
+    return res.json({});
+  });
 };

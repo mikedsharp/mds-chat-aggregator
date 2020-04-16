@@ -25,14 +25,14 @@
 </script>
 
 <style lang="scss">
-  ul {
+  .chat-window {
     margin: 0;
     padding: 0;
     background-color: #eee;
     border: 1px solid #dcdcdc;
     height: 100%;
     overflow-y: auto;
-    li {
+    .message {
       padding: 10px 2px;
       list-style-type: none;
       margin: 0;
@@ -41,11 +41,11 @@
       flex-direction: row;
       align-items: flex-start;
       color: #000;
-      b {
+      .username {
         margin-right: 6px;
         color: #777;
       }
-      img {
+      .avatar {
         display: flex;
         width: 32px;
         height: 32px;
@@ -55,7 +55,7 @@
         margin: 0 10px;
         border-radius: 50%;
       }
-      span {
+      .message-text {
         margin-top: 3px;
         word-break: break-word;
         word-wrap: break-word;
@@ -64,12 +64,12 @@
   }
 </style>
 
-<ul id="chat-window">
+<ul class="chat-window" id="chat-window">
   {#each messages as message}
-    <li>
-      <img alt="user avatar" src={message.avatar} />
-      <span>
-        <b>{message.username}</b>
+    <li class="message">
+      <img class="avatar" alt="user avatar" src={message.avatar} />
+      <span class="message-text">
+        <b class="username">{message.username}</b>
         {message.message}
       </span>
     </li>
